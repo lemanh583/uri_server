@@ -1,0 +1,45 @@
+
+//category
+
+// create
+
+POST http://localhost:3000/api/category/create
+Content-Type: application/json
+
+{
+  "name": "Đơn ca"
+}
+
+###
+//update
+POST http://localhost:3000/api/category/update/643238992353e471c45f913b
+Content-Type: application/json
+
+{
+  "name": "Đơn ca update"
+}
+
+###
+
+//base
+
+// create
+
+POST http://localhost:3000/api/contact/create
+Content-Type: application/json
+Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDAwNjQ2NmVkN2E4MGM3NzI0OGZiZCIsImlhdCI6MTY4MTkxNzUxMCwiZXhwIjoxNjg0NTA5NTEwfQ.u-X2IFokq0kPQdnAoiV0FBYKOZmdcamNjNKMhKxFmik"
+
+{
+  "name": "123",
+   "email": "123@gmail.com",
+   "phone": 324563456735
+}
+
+###
+//update
+POST http://localhost:3000/api/base/update/643238992353e471c45f913b
+Content-Type: application/json
+
+{
+  "name": "Đơn ca update",
+}
