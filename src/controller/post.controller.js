@@ -4,7 +4,7 @@ const userModel = require("../model/user.model");
 const categoryModel = require("../model/category.model");
 const schema = require("../validate/post.schema");
 const Upload = require("../controller/upload.controller");
-const ObjectID = require("mongodb").ObjectID;
+const ObjectId = require("mongodb").ObjectId;
 
 class PostController {
   static async create(req, res) {
@@ -60,7 +60,7 @@ class PostController {
     try {
       const slug = req.params.slug;
       let condition = { $or: [ { slug: slug } ] }
-      if(ObjectID.isValid(slug)) {
+      if(ObjectId.isValid(slug)) {
         condition.$or.push( { _id: slug })
       }
       const post = await postModel
