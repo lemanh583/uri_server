@@ -43,3 +43,13 @@ Content-Type: application/json
 {
   "name": "Đơn ca update",
 }
+
+###
+POST http://localhost:3100/api/user/create
+Content-Type: application/json
+
+{
+  "username": "uri.admin",
+  "email": "uri.admin@admin.vn",
+  "password": "urI@1234"
+}

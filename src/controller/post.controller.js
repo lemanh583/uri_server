@@ -1,6 +1,7 @@
 const Helper = require("../utils/helper");
 const postModel = require("../model/post.model");
 const userModel = require("../model/user.model");
+const categoryModel = require("../model/category.model");
 const schema = require("../validate/post.schema");
 const Upload = require("../controller/upload.controller");
 
@@ -58,7 +59,7 @@ class PostController {
     try {
       const slug = req.params.slug;
       const post = await postModel
-        .findOne({ slug: slug, deleted_time: { $exists: false } })
+        .findOne({ $or: [{ slug: slug }, { _id: slug }], deleted_time: { $exists: false } })
         .populate({ path: "category", select: "name slug" })
         .populate({ path: "author", select: "name username email" })
         .populate({ path: "image", select: "src" });
@@ -105,7 +106,7 @@ class PostController {
     }
   }
 
-  static mapFilter(condition, search, filter) {
+  static async mapFilter(condition, search, filter) {
     if (search) {
       const searchRegex = new RegExp(`.*${search}.*`, "i");
       condition["$or"] = [{ title: searchRegex }, { descriptions: searchRegex }];
@@ -114,9 +115,14 @@ class PostController {
     if (filter.category) {
       condition.category = filter.category;
     }
-    if (filter.category) {
-      condition.category = filter.category;
+    if(filter.slug_category) {
+      let category = await categoryModel.findOne({slug: slug_category})
+      condition.category = category._id
     }
+
+    // if (filter.category) {
+    //   condition.category = filter.category;
+    // }
     // if (filter.approved) {
     //   condition.approved = filter.approved;
     // }
