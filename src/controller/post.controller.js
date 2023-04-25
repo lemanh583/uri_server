@@ -4,6 +4,7 @@ const userModel = require("../model/user.model");
 const categoryModel = require("../model/category.model");
 const schema = require("../validate/post.schema");
 const Upload = require("../controller/upload.controller");
+const ObjectID = require("mongodb").ObjectID;
 
 class PostController {
   static async create(req, res) {
@@ -58,8 +59,12 @@ class PostController {
   static async get(req, res) {
     try {
       const slug = req.params.slug;
+      let condition = { $or: [ { slug: slug } ] }
+      if(ObjectID.isValid(slug)) {
+        condition.$or.push( { _id: slug })
+      }
       const post = await postModel
-        .findOne({ $or: [{ slug: slug }, { _id: slug }], deleted_time: { $exists: false } })
+        .findOne({ ...condition , deleted_time: { $exists: false } })
         .populate({ path: "category", select: "name slug" })
         .populate({ path: "author", select: "name username email" })
         .populate({ path: "image", select: "src" });
