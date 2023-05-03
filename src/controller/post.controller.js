@@ -13,6 +13,9 @@ class PostController {
       await schema.validateAsync(data);
       const uid = req.user_id;
       const file = req?.files?.file;
+      if(!Array.isArray(data.category)) {
+        data.category = [data.category]
+      }
       const find = await userModel.findById(uid);
       if (!find) return res.status(400).send({ success: false, message: "Not find user" });
       data.author = uid;
@@ -99,6 +102,9 @@ class PostController {
         const rs = await Upload.uploadToCloudinary(file, "image");
         data.image = rs.img._id;
         data.url_image = rs.img.src;
+      }
+      if(!Array.isArray(data.category)) {
+        data.category = [data.category]
       }
       const slug = Helper.removeAccents(data.title, true);
       data.slug = slug;
