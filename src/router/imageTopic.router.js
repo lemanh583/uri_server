@@ -4,7 +4,7 @@ const ImageController = require("../controller/imageTopic.controller");
 const { auth } = require("../middleware/auth.middleware")
 
 route
-//   .post("/list", auth, ImageController.list)
+  .post("/list", ImageController.list)
   .post("/delete", auth, ImageController.delete)
     
 
