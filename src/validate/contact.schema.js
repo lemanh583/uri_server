@@ -4,8 +4,9 @@ const schema = Joi.object({
     name: Joi.string(),
     email: Joi.string().email(),
     phone: Joi.number().integer(),
-    description: Joi.string().empty(),
-    base: Joi.string().empty()
+    description: Joi.string(),
+    base: Joi.string(),
+    course: Joi.string(),
 })
 
 module.exports = schema
