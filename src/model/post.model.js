@@ -11,6 +11,11 @@ const postSchema = new Schema({
   image: { type: Schema.Types.ObjectId, ref: "images" },
   url_image: {type: String},
   view: { type: Number, default: 0 },
+  hiring: {
+    name: { type: String },
+    address: { type: String },
+    date: { type: Number },
+  },
   // approved: { type: String, default: 0 },
   created_time: { type: Number, default: Date.now },
   updated_time: { type: Number, default: Date.now },

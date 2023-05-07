@@ -8,6 +8,7 @@ const contactSchema = new Schema({
   base: { type: String },
   course: { type: String },
   description: {type: String},
+  active: { type: Boolean, default: false },
   created_time: { type: Number, default: Date.now },
   updated_time: { type: Number, default: Date.now },
   deleted_time: { type: Number }

@@ -32,7 +32,7 @@ class ImageController {
   static async delete(req, res) {
     try {
       const id = req.params.id;
-      let response = await imageModel.findOneAndUpdate({ _id: id }, { delete_time: Date.now() });
+      let response = await imageModel.findOneAndUpdate({ _id: id }, { deleted_time: Date.now() });
       return res.send({ success: true, data: response });
     } catch (error) {
       console.error(error);

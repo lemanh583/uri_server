@@ -13,8 +13,8 @@ class PostController {
       await schema.validateAsync(data);
       const uid = req.user_id;
       const file = req?.files?.file;
-      if(!Array.isArray(data.category)) {
-        data.category = [data.category]
+      if (!Array.isArray(data.category)) {
+        data.category = [data.category];
       }
       const find = await userModel.findById(uid);
       if (!find) return res.status(400).send({ success: false, message: "Not find user" });
@@ -25,6 +25,9 @@ class PostController {
         const rs = await Upload.uploadToCloudinary(file, "image");
         data.image = rs.img._id;
         data.url_image = rs.img.src;
+      }
+      if(data.hiring) {
+        data.hiring = JSON.parse(data.hiring)
       }
       const result = await postModel.create(data);
       return res.send({ success: true, data: result });
@@ -39,8 +42,9 @@ class PostController {
     try {
       const { filter, search, sort, page, limit } = req.body;
       let condition = { deleted_time: { $exists: false } };
-      PostController.mapFilter(condition, search, filter);
-
+      // console.log('filter', filter);
+      let f = await PostController.mapFilter(condition, search, filter);
+      if(!f) return res.status(400).send({ success: false, message: "no category" });
       let skip = (page - 1) * limit;
 
       const result = await postModel
@@ -62,12 +66,12 @@ class PostController {
   static async get(req, res) {
     try {
       const slug = req.params.slug;
-      let condition = { $or: [ { slug: slug } ] }
-      if(ObjectId.isValid(slug)) {
-        condition.$or.push( { _id: slug })
+      let condition = { $or: [{ slug: slug }] };
+      if (ObjectId.isValid(slug)) {
+        condition.$or.push({ _id: slug });
       }
       const post = await postModel
-        .findOne({ ...condition , deleted_time: { $exists: false } })
+        .findOne({ ...condition, deleted_time: { $exists: false } })
         .populate({ path: "category", select: "name slug" })
         .populate({ path: "author", select: "name username email" })
         .populate({ path: "image", select: "src" });
@@ -103,11 +107,14 @@ class PostController {
         data.image = rs.img._id;
         data.url_image = rs.img.src;
       }
-      if(!Array.isArray(data.category)) {
-        data.category = [data.category]
+      if (!Array.isArray(data.category)) {
+        data.category = [data.category];
       }
       const slug = Helper.removeAccents(data.title, true);
       data.slug = slug;
+      if(data.hiring) {
+        data.hiring = JSON.parse(data.hiring)
+      }
       const post = await postModel.findByIdAndUpdate(id, data, { new: true });
       if (!post) return res.status(500).send({ success: false, message: "Not find post" });
       return res.send({ success: true, data: post });
@@ -118,29 +125,34 @@ class PostController {
   }
 
   static async mapFilter(condition, search, filter) {
-    if (search) {
-      const searchRegex = new RegExp(`.*${search}.*`, "i");
-      condition["$or"] = [{ title: searchRegex }, { descriptions: searchRegex }];
-    }
-    if (!filter) return condition;
-    if (filter.category) {
-      condition.category = filter.category;
-    }
-    if(filter.slug_category) {
-      let category = await categoryModel.findOne({slug: slug_category})
-      condition.category = category._id
-    }
+    try {
+      if (search) {
+        const searchRegex = new RegExp(`.*${search}.*`, "i");
+        condition["$or"] = [{ title: searchRegex }, { descriptions: searchRegex }];
+      }
+      if (!filter) return condition;
+      if (filter.category) {
+        condition.category = filter.category;
+      }
+      if (filter.slug_category) {
+        let category = await categoryModel.findOne({ slug: filter.slug_category });
+        if(!category) return false
+        condition.category = category._id;
+      }
 
-    // if (filter.category) {
-    //   condition.category = filter.category;
-    // }
-    // if (filter.approved) {
-    //   condition.approved = filter.approved;
-    // }
-    // if (filter.author) {
-    //   condition.author = filter.author;
-    // }
-    return condition;
+      // if (filter.category) {
+      //   condition.category = filter.category;
+      // }
+      // if (filter.approved) {
+      //   condition.approved = filter.approved;
+      // }
+      // if (filter.author) {
+      //   condition.author = filter.author;
+      // }
+      return condition;
+    } catch (error) {
+      return false;
+    }
   }
 }
 

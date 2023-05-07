@@ -51,6 +51,21 @@ class ContactController {
     }
   }
 
+  static async update(req, res) {
+    try {
+      const id = req.params.id;
+      const data = req.body;
+      if (!id) {
+        return res.status(500).send({ success: false, message: "no id" });
+      }
+      let response = await contactModel.findOneAndUpdate({ _id: id }, {...data, updated_time: Date.now()});
+      return res.send({ success: true, data: response });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ success: false, message: error.message });
+    }
+  }
+
   static async delete(req, res) {
     try {
       const id = req.params.id;

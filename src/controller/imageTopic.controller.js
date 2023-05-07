@@ -1,14 +1,22 @@
 const schema = require("../validate/contact.schema");
 const imageTopicModel = require("../model/imageTopic.model");
+const topicModel = require("../model/topic.model");
 const Helper = require("../utils/helper");
 
 class ImageController {
   static async list(req, res) {
     try {
-      const { page, limit, sort, search } = req.body;
+      const { page, limit, sort, search, slug_topic } = req.body;
       let skip = (page - 1) * limit;
+      let condition = {}
+      if(slug_topic) {
+        let topic = await topicModel.findOne({slug: slug_topic})
+        if(topic) {
+          condition = { topic: topic._id }
+        }
+      }
       let response = await imageTopicModel
-        .find({})
+        .find(condition)
         .populate("image")
         .populate("topic")
         .sort(sort || { created_time: -1 })
