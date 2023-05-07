@@ -8,7 +8,7 @@ class ImageController {
     try {
       const { page, limit, sort, search, topicId } = req.body;
       let skip = (page - 1) * limit;
-      let condition = {}
+      let condition = { deleted_time: { $exists: false } }  
       if(topicId) {
         let imagesId = await imageTopic.find({ topic: topicId }).distinct("image");
         condition._id = {

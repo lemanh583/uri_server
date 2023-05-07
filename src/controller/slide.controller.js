@@ -1,7 +1,7 @@
 // const schema = require("../validate/category.schema");
 const slideModel = require("../model/slide.model");
 const Helper = require("../utils/helper");
-const Upload = require("./upload.controller")
+const Upload = require("./upload.controller");
 
 class SlideController {
   static async create(req, res) {
@@ -24,7 +24,7 @@ class SlideController {
 
   static async list(req, res) {
     try {
-      let response = await slideModel.find().sort({created_time: 1});  
+      let response = await slideModel.find({ deleted_time: { $exists: false } }).sort({ created_time: 1 });
       return res.send({ success: true, list: response });
     } catch (error) {
       console.error(error);

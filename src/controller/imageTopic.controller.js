@@ -8,12 +8,12 @@ class ImageController {
     try {
       const { page, limit, sort, search, slug_topic } = req.body;
       let skip = (page - 1) * limit;
-      let condition = {}
+      let topic = await topicModel.findOne({slug: slug_topic || 'co-so-vat-chat'})
+      let condition = { deleted_time: { $exists: false },   }
       if(slug_topic) {
-        let topic = await topicModel.findOne({slug: slug_topic})
-        if(topic) {
-          condition = { topic: topic._id }
-        }
+        condition.topic = topic._id
+      } else {
+        condition.topic = { $ne: topic._id }
       }
       let response = await imageTopicModel
         .find(condition)
