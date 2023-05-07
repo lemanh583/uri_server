@@ -22,7 +22,7 @@ class ImageController {
         .sort(sort || { created_time: -1 })
         .skip(Number(skip) || 0)
         .limit(Number(limit)|| 20);
-      let count = await imageTopicModel.count();
+      let count = await imageTopicModel.count(condition);
       return res.send({ success: true, list: response, total: count, totalPage: count % limit == 0 ? count / limit : Math.floor(count / limit) + 1 });
     } catch (error) {
       console.error(error);
