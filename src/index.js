@@ -14,7 +14,11 @@ app.use(fileUpload({
   tempFileDir : 'src/tmp/'
 }));
 
+// app.locals.cache = cache
+// app.set('cache1', cache)
 app.use(router);
+
+// app.set('cache', cache)
 
 // const server = require('http').createServer(app)
 // const socketCtr =  require("./controller/socket")

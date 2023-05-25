@@ -2,6 +2,7 @@ const schema = require("../validate/category.schema");
 const topicModel = require("../model/topic.model");
 const imageTopicModel = require("../model/imageTopic.model");
 const Helper = require("../utils/helper");
+const cache = require("../utils/cache");
 
 class TopicController {
   static async create(req, res) {
@@ -36,6 +37,7 @@ class TopicController {
         .skip(Number(skip))
         .limit(Number(limit));
       let count = await topicModel.count();
+      console.log('cache.keys()', cache.keys())
       return res.send({ success: true, list: response, total: count, totalPage: count % limit == 0 ? count / limit : Math.floor(count / limit) + 1 });
     } catch (error) {
       console.error(error);
@@ -115,7 +117,7 @@ class TopicController {
         data.slug = Helper.removeAccents(data.name, false);
         let response = await topicModel.findOneAndUpdate({ _id: id }, data, { new: true });
       }
-
+      cache.del(cache.keys())
       return res.send({ success: true });
     } catch (error) {
       console.error(error);
