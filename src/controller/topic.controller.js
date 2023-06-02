@@ -37,7 +37,6 @@ class TopicController {
         .skip(Number(skip))
         .limit(Number(limit));
       let count = await topicModel.count();
-      console.log('cache.keys()', cache.keys())
       return res.send({ success: true, list: response, total: count, totalPage: count % limit == 0 ? count / limit : Math.floor(count / limit) + 1 });
     } catch (error) {
       console.error(error);

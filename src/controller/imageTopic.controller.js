@@ -67,7 +67,7 @@ class ImageController {
       let rs = { success: true, list: response, total: count, totalPage: count % limit == 0 ? count / limit : Math.floor(count / limit) + 1 }
       cache.set(`URI-images-${page}-${limit}`, JSON.stringify(rs))
       const stats = cache.getStats();
-      console.log(stats, cache.keys());
+      // console.log(stats, cache.keys());
       return res.send(rs);
     } catch (error) {
       console.error(error);
