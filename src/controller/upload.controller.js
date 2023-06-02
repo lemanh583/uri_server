@@ -15,7 +15,6 @@ class Upload {
   static async uploadFile(req, res) {
     try {
       let files = req?.files?.file;
-      console.log('files', files)
       if (!Array.isArray(files)) {
         files = [files];
       }
@@ -45,19 +44,31 @@ class Upload {
 
   static async uploadToCloudinary(file, type) {
     try {
-      let params = {
-        folder: "URI",
-        resource_type: type,
-      };
-      let result = await cloudinary.uploader.upload(file.tempFilePath, params);
+      let name = Date.now() + '-' + file.name
+      let uploadPath = path.join( __dirname, '../../public/images/' + name);
+      let rs = await file.mv(uploadPath)
       await Upload.removeTmp(file.tempFilePath);
       let data = {
-        public_id: result.public_id,
-        src: result.secure_url,
+        public_id: "none",
+        src: process.env.DOMAIN_NAME + '/static/images/' + name,
       };
       const img = await imageModel.create(data);
       data.img = img;
       return data;
+
+      // let params = {
+      //   folder: "URI",
+      //   resource_type: type,
+      // };
+      // let result = await cloudinary.uploader.upload(file.tempFilePath, params);
+      // await Upload.removeTmp(file.tempFilePath);
+      // let data = {
+      //   public_id: result.public_id,
+      //   src: result.secure_url,
+      // };
+      // const img = await imageModel.create(data);
+      // data.img = img;
+      // return data;
     } catch (error) {
       console.error(error);
       return false;
